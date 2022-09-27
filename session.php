@@ -47,17 +47,31 @@
 </head>
 <body>
 <div id="card-panel" class="fullheight">
-<img src="imgs/0.png" id="card-img">
+<img src="<?php echo URL_DIR;?>/imgs/0.png" id="card-img">
 </div>
 <script>
+function change_card( num ) {
+	$( "#card-img" ).fadeOut(
+		500,
+		function(){
+			$( '#card-img' ).attr('src', '<?php echo rtrim( URL_DIR, '/' );?>' + '/imgs/' + num + '.png');
+		}
+	);
+	$( "#card-img" ).fadeIn(500);
+}
+function removeTrailingSlash(url) {
+  return url.replace(/\/$/, '')
+}
+
+/* 実行 */
 var img_number = 0;
 $(function() {
 	setInterval( function(){
 		$.getJSON(
-			location.href+'/get',
+			removeTrailingSlash( location.href ) +'/get',
 			function(data){			
 				if( img_number != data ) {
-					$( '#card-img' ).attr('src', '<?php echo URL_DIR;?>' + 'imgs/' + data + '.png');
+					change_card( data );
 					img_number = data;
 				}
 			}
@@ -66,15 +80,17 @@ $(function() {
 });
 $("#card-panel").click(function(){
  	$.getJSON(
-		location.href+'/renew',
+		removeTrailingSlash( location.href ) + '/renew',
 		function(data){			
 			if( img_number != data ) {
-				$( '#card-img' ).attr('src', '<?php echo URL_DIR;?>' + 'imgs/' + data + '.png');
+				change_card( data );
 				img_number = data;
 			}
 		}
 	);
 });
+
+
 </script>
 </body>
 </html>
